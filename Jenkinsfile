@@ -17,7 +17,7 @@ pipeline  {
                 sh '''
                 cd /var/lib/jenkins/workspace/
                 rm -rf ansible
-                git clone https://github.com/qwertynebot/ansible
+                git clone https://github.com/Cyber1993/ansible-jenkins.git
                 '''
             }                
         }    
@@ -25,7 +25,7 @@ pipeline  {
             steps {
                 sh '''
                 cd /var/lib/jenkins/workspace/ansible/Ansible
-                docker build -t yurashupik/ansible .
+                docker build -t yurashupik/md221 .
                 '''
             }
         } 
@@ -34,14 +34,14 @@ pipeline  {
                 sh '''
                 docker run \
                 --name ansible \
-                -d yurashupik/ansible
+                -d yurashupik/md221
                 '''
             }
         }
         stage("docker login") {
             steps {
                 echo " ============== docker login =================="
-                withCredentials([usernamePassword(credentialsId: 'dckr_pat_SUTo6mmsFqwtNr1X_zlTte2ImsM', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]) {
+                withCredentials([usernamePassword(credentialsId: 'yurashupikjenkins', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]) {
                     script {
                         def loginResult = sh(script: "docker login -u $USERNAME -p $PASSWORD", returnStatus: true)
                         if (loginResult != 0) {
@@ -57,7 +57,7 @@ pipeline  {
             steps {
                 echo " ============== pushing image =================="
                 sh '''
-                docker push yurashupik/ansible
+                docker push yurashupik/md221
                 '''
             }
         }
